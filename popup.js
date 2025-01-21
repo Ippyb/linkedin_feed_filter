@@ -1,35 +1,32 @@
 document.addEventListener("DOMContentLoaded", () => {
   const savedTextList = document.getElementById("savedTextList");
 
-  // Create the main label element
-  const label = document.createElement("label");
-  label.className = "toggle-switch";
+  // Create the toggle container div
+  const toggleContainer = document.createElement("div");
+  toggleContainer.className = "toggle-container";
 
-  // Create the checkbox input
-  const checkbox = document.createElement("input");
-    checkbox.type = "checkbox";
+  // Create toggle button description
+  const description = document.createElement("span");
+  description.textContent = "Remove Job Posts";
 
+  // Create toggle switch
+  const toggleSwitchContainer = document.createElement("label");
+  toggleSwitchContainer.className = "switch";
 
-  // Create the div for the background
-  const backgroundDiv = document.createElement("div");
-  backgroundDiv.className = "toggle-switch-background";
+  const toggleSwitch = document.createElement("input");
+  toggleSwitch.type = "checkbox";
+  toggleSwitch.className = "toggle-checkbox";
 
-  // Create the div for the handle
-  const handleDiv = document.createElement("div");
-  handleDiv.className = "toggle-switch-handle";
+  const toggleSlider = document.createElement("span");
+  toggleSlider.className = "slider";
 
-  // Append the handle to the background
-  backgroundDiv.appendChild(handleDiv);
+  toggleSwitchContainer.appendChild(toggleSwitch);
+  toggleSwitchContainer.appendChild(toggleSlider);
 
-  // Append the checkbox and background to the label
-  label.appendChild(checkbox);
-  label.appendChild(backgroundDiv);
+  toggleContainer.appendChild(toggleSwitchContainer);
+  toggleContainer.appendChild(description);
 
-  // Append the label to the body or any desired container
-  document.body.appendChild(label);
-
-  // Add toggle switch to the top of the page
-  document.body.insertBefore(label, savedTextList);
+  document.body.insertBefore(toggleContainer, savedTextList);
 
   // Function to render saved texts
   function renderSavedTexts(savedTexts) {
