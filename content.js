@@ -38,13 +38,13 @@ document.addEventListener("mouseup", function () {
 
       // Add event listener for the button click
       save_text_button.addEventListener("click", function (event) {
-        event.stopPropagation(); // Prevent this click from being propagated to the document
+        event.stopPropagation(); 
         saveSelection(selectedText);
       });
     } else {
       // If the button exists, directly add the click event listener
       existingButton.addEventListener("click", function (event) {
-        event.stopPropagation(); // Prevent this click from being propagated to the document
+        event.stopPropagation();
         saveSelection(selectedText);
       });
     }
@@ -59,21 +59,26 @@ document.addEventListener("mouseup", function () {
 
 function saveSelection(selectedText) {
   if (selectedText) {
-    chrome.storage.local.set({ savedText: selectedText }, function () {
-      if (chrome.runtime.lastError) {
-        console.error(
-          "Error saving text to local storage:",
-          chrome.runtime.lastError
-        );
-      } else {
-        console.log("Text saved to local storage:", selectedText);
+    chrome.storage.local.get("savedTexts", (result) => {
+      const savedTexts = result.savedTexts || []; // Retrieve existing texts or default to an empty array
+      savedTexts.push(selectedText); // Add the new text to the array
 
-        // Remove the button after successful saving
-        const button = document.getElementById("save_text_button");
-        if (button) {
-          button.remove();
+      chrome.storage.local.set({ savedTexts }, () => {
+        if (chrome.runtime.lastError) {
+          console.error(
+            "Error saving text to local storage:",
+            chrome.runtime.lastError
+          );
+        } else {
+          console.log("Text saved to local storage:", selectedText);
+
+          // Remove the button after successful saving
+          const button = document.getElementById("save_text_button");
+          if (button) {
+            button.remove();
+          }
         }
-      }
+      });
     });
   }
 }

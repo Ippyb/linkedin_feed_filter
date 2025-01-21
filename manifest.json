@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "LinkedIn Text Saver",
+  "name": "LinkedIn Feed Filter",
   "version": "1.0",
   "description": "Saves highlighted text on LinkedIn to local storage.",
   "permissions": [
@@ -9,6 +9,10 @@
   ],
   "icons": {
     "16": "LF_logo_copy.png"
+  },
+  "action": { 
+    "default_popup": "popup.html", 
+    "default_icon": "LF_logo_copy.png" 
   },
   "content_scripts": [
     {
