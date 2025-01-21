@@ -1,0 +1,19 @@
+{
+  "manifest_version": 3,
+  "name": "LinkedIn Text Saver",
+  "version": "1.0",
+  "description": "Saves highlighted text on LinkedIn to local storage.",
+  "permissions": [
+    "activeTab",
+    "storage"
+  ],
+  "icons": {
+    "16": "LF_logo_copy.png"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://*.linkedin.com/*"], 
+      "js": ["content.js"]
+    }
+  ]
+}
