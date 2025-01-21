@@ -1,9 +1,39 @@
 document.addEventListener("DOMContentLoaded", () => {
   const savedTextList = document.getElementById("savedTextList");
 
+  // Create the main label element
+  const label = document.createElement("label");
+  label.className = "toggle-switch";
+
+  // Create the checkbox input
+  const checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+
+
+  // Create the div for the background
+  const backgroundDiv = document.createElement("div");
+  backgroundDiv.className = "toggle-switch-background";
+
+  // Create the div for the handle
+  const handleDiv = document.createElement("div");
+  handleDiv.className = "toggle-switch-handle";
+
+  // Append the handle to the background
+  backgroundDiv.appendChild(handleDiv);
+
+  // Append the checkbox and background to the label
+  label.appendChild(checkbox);
+  label.appendChild(backgroundDiv);
+
+  // Append the label to the body or any desired container
+  document.body.appendChild(label);
+
+  // Add toggle switch to the top of the page
+  document.body.insertBefore(label, savedTextList);
+
   // Function to render saved texts
   function renderSavedTexts(savedTexts) {
-    savedTextList.innerHTML = ""; 
+    savedTextList.innerHTML = "";
 
     if (savedTexts.length > 0) {
       savedTexts.forEach((text, index) => {
@@ -29,8 +59,8 @@ document.addEventListener("DOMContentLoaded", () => {
           });
         });
 
-        listItem.appendChild(deleteButton); 
-        savedTextList.appendChild(listItem); 
+        listItem.appendChild(deleteButton);
+        savedTextList.appendChild(listItem);
       });
     } else {
       savedTextList.textContent = "No saved text found.";

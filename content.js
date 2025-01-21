@@ -1,3 +1,20 @@
+const professionalUpdateKeywords = [
+  "new role",
+  "new position",
+  "excited to announce",
+  "thrilled to join",
+  "landed a role",
+  "starting at",
+  "accepted a position",
+  "I’ll be joining",
+  "have been selected",
+  "starting a new position",
+  "will be joining",
+  "I’ve accepted a",
+  "accepted an offer",
+  "be joining",
+];
+
 // Track the state of text selection
 let hasSelection = false;
 
@@ -38,7 +55,7 @@ document.addEventListener("mouseup", function () {
 
       // Add event listener for the button click
       save_text_button.addEventListener("click", function (event) {
-        event.stopPropagation(); 
+        event.stopPropagation();
         saveSelection(selectedText);
       });
     } else {
@@ -81,4 +98,56 @@ function saveSelection(selectedText) {
       });
     });
   }
+}
+
+function saveProfessionalUpdateKeywords() {
+  chrome.storage.local.get("savedTexts", (result) => {
+    const savedTexts = result.savedTexts || []; // Retrieve existing texts or default to an empty array
+
+    // Add professional update keywords to savedTexts
+    professionalUpdateKeywords.forEach((keyword) => {
+      // Only add if not already present to avoid duplicates
+      if (!savedTexts.includes(keyword)) {
+        savedTexts.push(keyword);
+      }
+    });
+
+    // Save the updated list back to local storage
+    chrome.storage.local.set({ savedTexts }, () => {
+      if (chrome.runtime.lastError) {
+        console.error(
+          "Error saving text to local storage:",
+          chrome.runtime.lastError
+        );
+      } else {
+        console.log(
+          "Professional update keywords saved to local storage:",
+          savedTexts
+        );
+      }
+    });
+  });
+}
+
+function removeProfessionalUpdateKeywords() {
+  chrome.storage.local.get("savedTexts", (result) => {
+    const savedTexts = result.savedTexts || []; // Retrieve existing texts or default to an empty array
+
+    // Filter out the professional update keywords from savedTexts
+    const updatedSavedTexts = savedTexts.filter(
+      (text) => !professionalUpdateKeywords.includes(text)
+    );
+
+    // Save the updated list back to local storage
+    chrome.storage.local.set({ savedTexts: updatedSavedTexts }, () => {
+      if (chrome.runtime.lastError) {
+        console.error(
+          "Error saving text to local storage:",
+          chrome.runtime.lastError
+        );
+      } else {
+        console.log("Professional update keywords removed from local storage.");
+      }
+    });
+  });
 }
