@@ -1,3 +1,13 @@
+// Content Scripts:
+  // Purpose
+    // Interacts with the web page's DOM.
+  // Key Characteristics:
+    // Runs in the context of the web page.
+    // Can manipulate the page's content, styles, or structure.
+    // Cannot directly access privileged Chrome APIs like chrome.tabs or chrome.runtime
+
+
+// This is a comprehensive list of all phrases that tend to be in job-related posts
 const professionalUpdateKeywords = [
   "new role",
   "new position",

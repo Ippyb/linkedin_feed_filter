@@ -26,7 +26,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const description = document.createElement("span");
   description.textContent = "Remove Job Posts";
 
-  // Create toggle switch
+  // Create toggle switch container
   const toggleSwitchContainer = document.createElement("label");
   toggleSwitchContainer.className = "switch";
 
@@ -43,6 +43,7 @@ document.addEventListener("DOMContentLoaded", () => {
   toggleContainer.appendChild(toggleSwitchContainer);
   toggleContainer.appendChild(description);
 
+  // Ensures the toggle and description are above the savedTextList
   document.body.insertBefore(toggleContainer, savedTextList);
 
   // Function to render saved texts
@@ -82,79 +83,48 @@ document.addEventListener("DOMContentLoaded", () => {
   // Function to save professional update keywords to local storage
   function saveProfessionalUpdateKeywords() {
     chrome.storage.local.get("savedTexts", (result) => {
-      const savedTexts = result.savedTexts || []; // Retrieve existing texts or default to an empty array
+      const savedTexts = result.savedTexts || [];
 
       // Add professional update keywords to savedTexts
       professionalUpdateKeywords.forEach((keyword) => {
-        // Only add if not already present to avoid duplicates
         if (!savedTexts.includes(keyword)) {
           savedTexts.push(keyword);
         }
       });
 
-      // Save the updated list back to local storage
-      chrome.storage.local.set({ savedTexts }, () => {
-        if (chrome.runtime.lastError) {
-          console.error(
-            "Error saving text to local storage:",
-            chrome.runtime.lastError
-          );
-        } else {
-          console.log(
-            "Professional update keywords saved to local storage:",
-            savedTexts
-          );
-        }
-      });
+      chrome.storage.local.set({ savedTexts });
     });
   }
 
   // Function to remove professional update keywords from local storage
   function removeProfessionalUpdateKeywords() {
     chrome.storage.local.get("savedTexts", (result) => {
-      const savedTexts = result.savedTexts || []; // Retrieve existing texts or default to an empty array
+      const savedTexts = result.savedTexts || [];
 
-      // Filter out the professional update keywords from savedTexts
       const updatedSavedTexts = savedTexts.filter(
-        (text) =>
-          !professionalUpdateKeywords.some((keyword) => text === keyword)
+        (text) => !professionalUpdateKeywords.includes(text)
       );
 
-      // Save the updated list back to local storage
-      chrome.storage.local.set({ savedTexts: updatedSavedTexts }, () => {
-        if (chrome.runtime.lastError) {
-          console.error(
-            "Error saving text to local storage:",
-            chrome.runtime.lastError
-          );
-        } else {
-          console.log(
-            "Professional update keywords removed from local storage."
-          );
-        }
-      });
+      chrome.storage.local.set({ savedTexts: updatedSavedTexts });
     });
   }
 
   // Function to check and apply the toggle state on page load
   function checkAndApplyToggleState() {
-    chrome.storage.local.get("toggleState", (result) => {
+    chrome.storage.local.get(["toggleState", "savedTexts"], (result) => {
       const toggleState = result.toggleState ?? false; // Default to 'off' if not set
       toggleSwitch.checked = toggleState;
 
+      // Apply actions based on the toggle state
       if (toggleState) {
-        // If toggle is on, save the professional update keywords
         saveProfessionalUpdateKeywords();
       } else {
-        // If toggle is off, remove the professional update keywords
         removeProfessionalUpdateKeywords();
       }
 
-      // Retrieve and render saved texts after toggle state check
-      chrome.storage.local.get("savedTexts", (result) => {
-        const savedTexts = result.savedTexts || [];
-        renderSavedTexts(savedTexts); // Render saved texts when popup loads
-      });
+      // Render saved texts
+      const savedTexts = result.savedTexts || [];
+      renderSavedTexts(savedTexts);
     });
   }
 
@@ -166,18 +136,21 @@ document.addEventListener("DOMContentLoaded", () => {
       removeProfessionalUpdateKeywords();
     }
 
-    // Update the saved texts in the popup after the toggle action
-    chrome.storage.local.get("savedTexts", (result) => {
-      const savedTexts = result.savedTexts || [];
-      renderSavedTexts(savedTexts); // Re-render saved texts
-    });
-
     // Store the toggle state
-    chrome.storage.local.set({ toggleState: toggleSwitch.checked }, () => {
-      if (chrome.runtime.lastError) {
-        console.error("Error saving toggle state:", chrome.runtime.lastError);
+    chrome.storage.local.set({ toggleState: toggleSwitch.checked });
+  });
+
+  // Listen for changes in chrome.storage.local and update dynamically
+  chrome.storage.onChanged.addListener((changes, namespace) => {
+    if (namespace === "local") {
+      if (changes.savedTexts) {
+        renderSavedTexts(changes.savedTexts.newValue || []);
       }
-    });
+
+      if (changes.toggleState) {
+        toggleSwitch.checked = changes.toggleState.newValue ?? false;
+      }
+    }
   });
 
   // Call the function to check and apply the toggle state on page load
