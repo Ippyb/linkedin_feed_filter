@@ -135,7 +135,7 @@ function removeProfessionalUpdateKeywords() {
 
     // Filter out the professional update keywords from savedTexts
     const updatedSavedTexts = savedTexts.filter(
-      (text) => !professionalUpdateKeywords.includes(text)
+      (text) => !professionalUpdateKeywords.some((keyword) => text === keyword)
     );
 
     // Save the updated list back to local storage
